@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit user</title>
+  <link rel="stylesheet" th:href="@{/css/noob.css}"/>
+</head>
+<body>
+<div class="wrap">
+  <header sec:authorize="isAuthenticated()">
+    <div>
+      Logged user: <span th:text="${myUser.getUsername()}">#username</span>
+    </div>
+    <div>
+      Roles: <span th:text="${myUser.getAuthorities()}">#roles</span>
+    </div>
+    <div>
+      <input type="button" value="User profile" onclick="window.location.href='/user'"/>
+    </div>
+    <form th:action="@{/logout}" th:method="POST">
+      <input type="submit" value="Logout"/>
+    </form>
+  </header>
+  <h1>Edit user</h1>
+  <div class="form-wrapper">
+    <form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
+      <div class="main_info">
+        <label for="username">Username:</label>
+        <br/>
+        <input type="text" th:field="*{username}" id="username" required/>
+        <div class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        <label for="password">Password:</label>
+        <br/>
+        <input type="password" th:field="*{password}" id="password" required/>
+        <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+      </div>
+      <div>
+        <div>
+          <label for="first_name">First name:</label>
+          <br/>
+          <input type="text" th:field="*{firstName}" id="first_name" required/>
+          <div class="error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+        </div>
+        <div>
+          <label for="last_name">Last name:</label>
+          <br/>
+          <input type="text" th:field="*{lastName}" id="last_name" required/>
+          <div class="error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+        </div>
+        <div>
+          <label for="age">Age:</label>
+          <br/>
+          <input type="text" th:field="*{age}" id="age" required/>
+          <div class="error" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <br/>
+          <input type="text" th:field="*{email}" id="email" required/>
+          <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+        <div>
+          <label for="roles" th:field="*{roles}">Roles:</label>
+          <br/>
+          <th:block th:each="role : ${roles}">
+            <input type="checkbox" th:field="*{roles}" th:value="${role.getName()}" th:text="${role.getName()}" id="roles">
+          </th:block>
+        </div>
+      </div>
+      <input type="submit" value="edit"/>
+      <input type="button" value="cancel" onclick="window.location.href='/admin'"/>
+    </form>
+  </div>
+</div>
+</body>
+</html>
