@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl{
 
     private final RoleDaoImpl roleDao;
     private final UserDaoImpl userDao;
@@ -34,43 +34,6 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(RoleDaoImpl roleDao, UserDaoImpl userDao) {
         this.roleDao = roleDao;
         this.userDao = userDao;
-    }
-
-    public boolean addRole(Role role) {
-        Role userBas = roleDao.findByName(role.getRole());
-        if(userBas != null) {return false;}
-        roleDao.add(role);
-        return true;
-    }
-
-    public Role findByNameRole(String name) {
-
-        return roleDao.findByName(name); }
-
-    public List<Role> listRoles() {
-        return roleDao.listRoles();
-    }
-
-    public Role findByIdRole(Long id) {
-        return roleDao.findByIdRole(id);
-    }
-
-    public List<Role> listByRole(List<String> name) {
-        return roleDao.listByName(name);
-    }
-
-    public boolean add(User user) {
-        User userBas = userDao.findByName(user.getUsername());
-        if(userBas != null) {
-            return false;
-        }
-        user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
-        userDao.add(user);
-        return true;
-    }
-
-    public List<User> listUsers() {
-        return userDao.listUsers();
     }
 
     public void delete(Long id) {
@@ -87,28 +50,57 @@ public class UserServiceImpl implements UserService {
         userDao.update(us);
     }
 
+    public boolean add(User user) {
+        User userBas = userDao.findByName(user.getUsername());
+        if(userBas != null) {
+            return false;
+        }
+        user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
+        userDao.add(user);
+        return true;
+    }
+
+    public List<User> listUsers() {
+        return userDao.listUsers();
+    }
+
     public User findById(Long id) {
         return userDao.findById(id);
     }
 
-    public User findByUsername(String userName) {
-        return userDao.findByName(userName);
+    public Role findByIdRole(Long id) {
+        return roleDao.findByIdRole(id);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userBas = findByUsername(username);
-        if (userBas == null) {
-            throw new UsernameNotFoundException(username + " not found");
+    public List<Role> listRoles() {
+        return roleDao.listRoles();
+    }
+
+    public Role findByNameRole(String name) {
+        return roleDao.findByName(name);
+    }
+
+    public List<Role> listByRole(List<String> name) {
+        return roleDao.listByName(name);
+    }
+
+    public boolean addRole(Role role) {
+        Role userBas = roleDao.findByName(role.getRole());
+        if(userBas != null) {
+            return false;
         }
-        UserDetails user = new org.springframework.security.core.userdetails.User(userBas.getUsername(), userBas.getPassword(), aug(userBas.getRoles()));
-        return userBas;
+        roleDao.add(role);
+        return true;
     }
 
-    private Collection<? extends GrantedAuthority> aug(Collection<Role> roles) {
-        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRole()))
-                .collect(Collectors.toList());
-    }
+//    public User findByUsername(String userName) {
+//        return userDao.findByName(userName);
+//    }
+
+//    private Collection<? extends GrantedAuthority> aug(Collection<Role> roles) {
+//        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRole()))
+//                .collect(Collectors.toList());
+//    }
 }
 
 
