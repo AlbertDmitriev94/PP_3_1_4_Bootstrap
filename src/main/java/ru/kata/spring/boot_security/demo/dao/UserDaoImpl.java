@@ -1,49 +1,48 @@
 package ru.kata.spring.boot_security.demo.dao;
 
-import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
+import javax.persistence.*;
+import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserDaoImpl implements UserDao {
-
     @PersistenceContext
-    private EntityManager em;
+    private EntityManager entityManager;
 
     @Override
-    public User findByName(String username) {
-        return em.createQuery("select u FROM User u JOIn fETCH u.roles WHERe u.username = :id", User.class)
-                .setParameter("id", username)
-                .getResultList().stream().findAny().orElse(null);
+    public void addUser(User user) {
+        entityManager.persist(user);
     }
 
     @Override
-    public  void delete(Long id) {
-        User us = em.find(User.class, id);
-        em.remove(us);
+    public List<User> getAllUsers() {
+        return entityManager.createQuery("select u from User u", User.class).getResultList();
     }
 
     @Override
-    public void update(User us) {
-        em.merge(us);
+    public User getUserById(Long id) {
+        TypedQuery<User> query = entityManager.createQuery("select u from User u where id = :id", User.class)
+                .setParameter("id", id);
+        return query.getSingleResult();
     }
 
     @Override
-    public boolean add(User user) {
-        em.persist(user);
-        return true;
+    public Optional<User> getUserByUsername(String username) {
+        TypedQuery<User> query = entityManager.createQuery("select u from User u join fetch u.roles where u.username = :username", User.class)
+                .setParameter("username", username);
+        return query.getResultList().stream().findFirst();
     }
 
     @Override
-    public List<User> listUsers() {
-        return em.createQuery("select s from User s", User.class).getResultList();
+    public void deleteUser(Long id) {
+        entityManager.remove(getUserById(id));
     }
 
     @Override
-    public User findById(Long id) {
-        return em.find(User.class, id);
+    public void updateUser(User user) {
+        entityManager.merge(user);
     }
 }

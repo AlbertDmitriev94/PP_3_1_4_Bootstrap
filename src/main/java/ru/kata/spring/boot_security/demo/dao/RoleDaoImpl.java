@@ -5,42 +5,32 @@ import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
-
+import javax.persistence.TypedQuery;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class RoleDaoImpl implements RoleDao {
-
     @PersistenceContext
-    private EntityManager em;
+    private EntityManager entityManager;
 
-    public boolean add(Role user) {
-        em.persist(user);
-        return true;
+
+    @Override
+    public Role addRole(Role role) {
+        entityManager.persist(role);
+        return role;
     }
 
     @Override
-    public Role findByIdRole(Long id) {
-        return em.find(Role.class, id);
+    public Set<Role> getAllRoles() {
+        return new HashSet<>(entityManager.createQuery("SELECT r from Role r", Role.class).getResultList());
     }
 
     @Override
-    public List<Role> listRoles() {
-        return em.createQuery("select s from Role s", Role.class).getResultList();
+    public Optional<Role> findByName(String name) {
+        TypedQuery<Role> query = entityManager.createQuery("from Role where name = :name", Role.class)
+                .setParameter("name", name);
+        return query.getResultList().stream().findFirst();
     }
-
-    @Override
-    public Role findByName(String name) {
-        return em.createQuery("select u FROM Role u WHERe u.role = :id", Role.class)
-                .setParameter("id", name)
-                .getResultList().stream().findAny().orElse(null);
-    }
-
-    @Override
-    public List<Role> listByName(List<String> name) {
-        return  em.createQuery("select u FROM Role u WHERe u.role in (:id)", Role.class)
-                .setParameter("id", name)
-                .getResultList();
-    }
-
 }
