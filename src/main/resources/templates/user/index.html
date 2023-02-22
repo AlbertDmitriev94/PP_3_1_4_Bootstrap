@@ -17,7 +17,7 @@
                           th:text="${' ' + authority.getAuthority().toString().replaceAll('ROLE_', '')}">#roles</span>
       </div>
       <div>
-        <form th:action="@{/logout}" th:method="POST">
+        <form th:action="@{/logout}"  th:method="POST">
           <input class="btn btn-dark text-secondary" type="submit" value="Logout"/>
         </form>
       </div>
