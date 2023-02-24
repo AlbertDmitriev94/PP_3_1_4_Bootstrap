@@ -11,6 +11,7 @@
 <body>
 <div class="container-fluid">
     <div class="row">
+<!--        Верхняя панель слева-->
         <nav class="navbar navbar-dark bg-dark">
             <div class="text-white fs-6 ps-4">
                 <span class="fw-bold" th:text="${myUser.getUsername()}">#username</span>
@@ -25,6 +26,7 @@
         </nav>
     </div>
     <div class="row vh-100">
+<!--        Левая боковая панель-->
         <div class="col-2">
             <div class="row">
                 <nav class="nav flex-column nav-pills">
@@ -34,6 +36,7 @@
             </div>
         </div>
         <div class="col-10 bg-light">
+<!--            Панель выбора кладок Юзера или Админа -->
             <div class="tab-pane fade show active">
                 <h1>Admin panel</h1>
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -80,7 +83,7 @@
                                     <td th:text="${user.getEmail()}"></td>
                                     <td>
                                         <th:block th:each="role : ${user.getRoles()}"
-                                                  th:text="${role.toString() + ' '}">
+                                                  th:text="${role.toString().replaceAll('ROLE_', '') + ' '}">
                                         </th:block>
                                     </td>
                                     <td>
@@ -233,35 +236,35 @@
                         </div>
                         <div class="card-body text-center">
                             <form th:method="POST" th:action="@{/admin/}" th:object="${user}">
-                                <label class="form-label" for="username">Username:</label>
-                                <input class="form-control" type="text" th:field="*{username}" id="username" required/>
+                                <label class="form-label" for="username" >Username:</label>
+                                <input class="form-control" type="text" th:field="*{username}" id="username" placeholder="Username" required/>
                                 <div class="form-text text-danger" th:if="${#fields.hasErrors('username')}"
                                      th:errors="*{username}"></div>
 
                                 <label class="form-label" for="password">Password:</label>
-                                <input class="form-control" type="password" th:field="*{password}" id="password"
+                                <input class="form-control" type="password" th:field="*{password}" id="password" placeholder="Password"
                                        required/>
                                 <div class="form-text text-danger" th:if="${#fields.hasErrors('password')}"
                                      th:errors="*{password}"></div>
 
                                 <label class="form-label" for="first_name">First name:</label>
-                                <input class="form-control" type="text" th:field="*{firstName}" id="first_name"
+                                <input class="form-control" type="text" th:field="*{firstName}" id="first_name" placeholder="First name"
                                        required/>
                                 <div class="form-text text-danger" th:if="${#fields.hasErrors('firstName')}"
                                      th:errors="*{firstName}"></div>
 
                                 <label class="form-label" for="last_name">Last name:</label>
-                                <input class="form-control" type="text" th:field="*{lastName}" id="last_name" required/>
+                                <input class="form-control" type="text" th:field="*{lastName}" id="last_name" placeholder="Last name" required/>
                                 <div class="form-text text-danger" th:if="${#fields.hasErrors('lastName')}"
                                      th:errors="*{lastName}"></div>
 
                                 <label class="form-label" for="age">Age:</label>
-                                <input class="form-control" type="text" th:field="*{age}" id="age" required/>
+                                <input class="form-control" type="text" th:field="*{age}" id="age" placeholder="Age" required/>
                                 <div class="form-text text-danger" th:if="${#fields.hasErrors('age')}"
                                      th:errors="*{age}"></div>
 
                                 <label class="form-label" for="email">Email:</label>
-                                <input class="form-control" type="text" th:field="*{email}" id="email" required/>
+                                <input class="form-control" type="text" th:field="*{email}" id="email" placeholder="Email" required/>
                                 <div class="form-text text-danger" th:if="${#fields.hasErrors('email')}"
                                      th:errors="*{email}"></div>
 
